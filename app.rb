@@ -3,9 +3,22 @@ require 'json'
 require 'octokit'
 
 load 'brain.rb'
-github = Octokit::Client.new :access_token => ENV['OAUTH_TOKEN']
+$github = Octokit::Client.new :access_token => ENV['OAUTH_TOKEN']
 
 set :port, ENV['PORT'] || 9393 #Default port
+
+#Checks whether the given comment was made by a repo collaborator or not
+def collaborator_comment?(repo, comment_id)
+	comment = $github.issue_comment(repo, comment_id)
+	user_id = comment.user.login
+	collaborators=$github.collaborators(repo)
+	flag = false
+	#todo shorten this with a filter
+	collaborators.each do |user|
+		flag = true if user.login == user_id
+	end
+	flag
+end
 
 get '/' do
   redirect "http://captnemo.in/eteled/"
@@ -36,21 +49,26 @@ post '/webhook' do
 	#Check the message
 	message_body = data['TextBody'].split("\n").first.chomp
 	repo_identifier = repo_name + "/" + issue_id
+	#Check if admin message is from collaborator
+	if message_body == "@eteled START" || message_body == "@eteled STOP"
+		unless collaborator_comment?(repo_name, comment_id)
+			$github.add_comment repo_name, issue_id, "Only repo collaborators can START/STOP etelde."
+			return 'START/STOP Rejected'
+		end
+	end
 	if message_body == "@eteled START"	#eteled Activate
 		puts "Start deleting comments on #{repo_identifier}"
 		Brain.add repo_identifier
-		github.add_comment repo_name, issue_id, "This issue is monitored by @eteled. Any further comments on this issue will be automatically deleted."
+		$github.add_comment repo_name, issue_id, "This issue is monitored by @eteled. Any further comments on this issue will be automatically deleted."
 		return 'START Accepted'
 	elsif message_body == "@eteled STOP"	#eteled De-Activate
 		puts "Stop deleting comments on #{repo_identifier}"
-		github.add_comment repo_name, issue_id, "This issue is no longer monitored by @eteled."
+		$github.add_comment repo_name, issue_id, "This issue is no longer monitored by @eteled."
 		Brain.delete repo_identifier
 		return 'STOP Accepted'
-	end
-	#Get comment number from message id
-	#Now we delete the comment
-	if Brain.member? repo_identifier
-		ret = github.delete_comment(repo_name, comment_id)
+	#if this comment is doomed for deletion
+	elsif Brain.member? repo_identifier
+		ret = $github.delete_comment(repo_name, comment_id)
 		if ret
 			puts "Deleted comment #{repo_identifier}##{comment_id}"
 			return "Comment Deleted"
@@ -58,6 +76,7 @@ post '/webhook' do
 			puts "Couldn't Delete comment #{repo_identifier}##{comment_id}"
 			return "Couldn't delete comment"
 		end
+	#This is a normal comment, and we are not watching this thread
 	else
 		puts "Skipping comment #{repo_identifier}##{comment_id}"
 		return "Comment untouched"
