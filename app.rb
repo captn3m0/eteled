@@ -49,23 +49,22 @@ post '/webhook' do
 	#Check the message
 	message_body = data['TextBody'].split("\n").first.chomp
 	repo_identifier = repo_name + "/" + issue_id
-	#Check if admin message is from collaborator
-	if message_body == "@eteled START" || message_body == "@eteled STOP"
-		unless collaborator_comment?(repo_name, comment_id)
-			$github.add_comment repo_name, issue_id, "Only repo collaborators can START/STOP etelde."
-			return 'START/STOP Rejected'
-		end
-	end
-	if message_body == "@eteled START"	#eteled Activate
+	
+	#eteled Activate
+	if message_body == "@eteled START"	and collaborator_comment?(repo_name, comment_id)
 		puts "Start deleting comments on #{repo_identifier}"
 		Brain.add repo_identifier
-		$github.add_comment repo_name, issue_id, "This issue is monitored by @eteled. Any further comments on this issue will be automatically deleted."
+		$github.add_comment repo_name, issue_id, "This issue is monitored by @eteled. Any further comments on this issue will be automatically deleted.
+		Only repo collaborators can START/STOP etelde."
 		return 'START Accepted'
-	elsif message_body == "@eteled STOP"	#eteled De-Activate
+
+	#eteled De-Activate
+	elsif message_body == "@eteled STOP" and collaborator_comment?(repo_name, comment_id)
 		puts "Stop deleting comments on #{repo_identifier}"
 		$github.add_comment repo_name, issue_id, "This issue is no longer monitored by @eteled."
 		Brain.delete repo_identifier
 		return 'STOP Accepted'
+	
 	#if this comment is doomed for deletion
 	elsif Brain.member? repo_identifier
 		ret = $github.delete_comment(repo_name, comment_id)
