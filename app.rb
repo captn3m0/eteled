@@ -62,10 +62,10 @@ post '/webhook' do
 		puts "Start deleting comments on #{repo_identifier}"
 		Brain.add repo_identifier
 		if(issue_id.length==40)
-			$github.create_commit_comment repo_name, issue_id, "This issue is monitored by @eteled. Any further comments on this issue will be automatically deleted.
+			$github.create_commit_comment repo_name, issue_id, "This thread is monitored by @eteled. Any further comments on this issue will be automatically deleted.
 			Only repo collaborators can START/STOP etelde."
 		else
-			$github.add_comment repo_name, issue_id, "This issue is monitored by @eteled. Any further comments on this issue will be automatically deleted.
+			$github.add_comment repo_name, issue_id, "This thread is monitored by @eteled. Any further comments on this issue will be automatically deleted.
 			Only repo collaborators can START/STOP etelde."
 		end
 		return 'START Accepted'
@@ -74,9 +74,9 @@ post '/webhook' do
 	elsif message_body == "@eteled STOP" and collaborator_comment?(repo_name, issue_id, comment_id)
 		puts "Stop deleting comments on #{repo_identifier}"
 		if(issue_id.length==40)
-			$github.create_commit_comment repo_name, issue_id, "This issue is no longer monitored by @eteled."
+			$github.create_commit_comment repo_name, issue_id, "This thread is no longer monitored by @eteled."
 		else
-			$github.add_comment repo_name, issue_id, "This issue is no longer monitored by @eteled."
+			$github.add_comment repo_name, issue_id, "This thread is no longer monitored by @eteled."
 		end
 		Brain.delete repo_identifier
 		return 'STOP Accepted'
