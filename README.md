@@ -21,4 +21,10 @@ eteled uses a webhook on postmarkapp to deliever all mail to a webhook (powered 
 - Its currently running on the postmark free tier, so it will stop working after it processes 10k emails. 
 - It cannot stop watchers from receiving notifications or replying to them via email. So, the comments may be visible for a small time (~2 minutes) before they are deleted.
 
+##Development
+In case your development machine is not on the internet (thus cannot receive a webjhook),
+get an account on [PageKite](https://pagekite.net/) and tunnel all requests to the
+port at which your sinatra app is running (default=9393). Get your own pagekite domain
+and use it as `pagekite.py 9393 kite_name.pagekite.me`.
+
 File any issues/bugs/feature-requests [here](https://github.com/eteled/issues/issues/new)
