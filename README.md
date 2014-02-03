@@ -27,4 +27,7 @@ get an account on [PageKite](https://pagekite.net/) and tunnel all requests to t
 port at which your sinatra app is running (default=9393). Get your own pagekite domain
 and use it as `pagekite.py 9393 kite_name.pagekite.me`.
 
+##Licence
+Licenced under the MIT Licence.
+
 File any issues/bugs/feature-requests [here](https://github.com/eteled/issues/issues/new)
