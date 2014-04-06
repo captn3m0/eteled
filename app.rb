@@ -16,17 +16,11 @@ def collaborator_comment?(repo, issue_id, comment_id)
 		comment = $github.issue_comment(repo, comment_id)
 	end
 	user_id = comment.user.login
-	collaborators=$github.collaborators(repo)
-	flag = false
-	#todo shorten this with a filter
-	collaborators.each do |user|
-		flag = true if user.login == user_id
-	end
-	flag
+	$github.collaborator?(repo, user_id)
 end
 
 get '/' do
-  redirect "http://captnemo.in/eteled/"
+  redirect "http://captnemo.in/eteled/", 301
 end
 
 post '/webhook' do
