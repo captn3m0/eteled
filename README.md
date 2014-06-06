@@ -11,7 +11,7 @@ eteled uses a webhook on postmarkapp to deliever all mail to a webhook (powered 
 ##Simple Usage Instructions:
 
 1. Add @eteled to your repo collaborators (So it can delete comments). 
-2. Put a comment saying "@eteled START" (capitalization important) on the issue/PR. (The user must be a collaborator himself in order for this command to take effect).
+2. Put a comment saying "@eteled START" (capitalization important) on the issue/PR. (You must be a collaborator yourself in order for this command to take effect).
 3. @eteled will delete all future comments on that thread as they are created. (It also makes a comment notifying that all future comments will be deleted)
 
 ![eteled](https://f.cloud.github.com/assets/584253/1665353/385f6838-5c36-11e3-9e65-f226d56ad0bb.png)
@@ -31,6 +31,6 @@ change the configuration options:
 3. `OCTOKIT_API_ENDPOINT` - Optional. Use this to test eteled against a GitHub enterprise or developer setup. I use it to proxy all eteled requests in development through `runscope.net`, an excellent tool to debug API Requests.
 
 ##Licence
-Licenced under the MIT Licence.
+Licenced under the [MIT Licence](http://nemo.mit-license.org/).
 
 File any issues/bugs/feature-requests [here](https://github.com/eteled/issues/issues/new)
