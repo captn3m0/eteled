@@ -2,6 +2,8 @@
 
 Eteled is a github bot that auto-deletes any future comments from a GitHub discussion (issue/commit/PR).
 
+**Update**: This project was made obsolete by [locking conversation](https://github.com/blog/1847-locking-conversations) support that github introduced on 10th June 2014. Prior to that, eteled was the only way to lock conversations in any manner on GitHub. Read below for more information, but use the locking conversation feature, as it is better supported. The only left usecase for eteled is to lock comments on a commit, since GitHub doesn't seem to support locking comments there yet.
+
 ##History
 eteled was born [from a discussion](https://github.com/isaacs/github/issues/38) where people wanted a "no more comments" button for a repository. This would be helpful in cases where a discussion thread devolved into a "mess of trolls".
 
